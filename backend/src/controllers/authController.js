@@ -2,8 +2,24 @@ import bcrypt from 'bcryptjs'
 import User from '../models/user.js'
 import { generateToken } from '../libs/utils.js'
 
-export const Login =()=>{
+export const Login =async (req,res)=>{
+    const {email,password} = req.body
+    try {
+        const user = await User.findOne({email})
+        if(!user){
+            return res.status(400).json({message:"Email Not correct"})
+        }
+        const hashPass = await bcrypt.compare(password,user.password)
+        if(!hashPass){
+            return res.status(400).json({message:"Password not correct"})
+        }
+        generateToken(user._id,res)
+        return res.status(201).json({message:"Login success",data:user})
 
+    } catch (error) {
+        console.log("Error in Login controller",error.meesage)
+        res.status(500).json({message:"Internal Server Error"})
+    }
 }
 
 export const Register=async (req,res)=>{
@@ -40,6 +56,12 @@ export const Register=async (req,res)=>{
     }
 }
 
-export const LogOut = ()=>{
-
+export const LogOut = (req,res)=>{
+    try {
+        res.cookie('jwt',"",{maxAge: 0})
+        res.status(200).json({message:"Logout success"})
+    } catch (error) {
+        console.log("Error in Logout controller",error.message)
+        res.status(400).json({message:"Internal Server Error"})
+    }
 }
