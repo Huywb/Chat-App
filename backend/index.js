@@ -2,6 +2,8 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import authRoutes from './src/routes/auth.js'
+import MessageRoutes from './src/routes/message.js'
+
 import { Connect } from './src/libs/ConnectDB.js'
 
 
@@ -11,6 +13,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use('/api/auth',authRoutes)
+app.use('/api/message',MessageRoutes)
 
 
 
