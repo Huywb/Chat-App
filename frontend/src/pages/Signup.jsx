@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { authStore } from '../store/AuthStore'
 import { Box } from '@mui/material'
-import { MessageSquare, User } from 'lucide-react'
+import { MessageSquare, User, Eye,EyeOff,Lock,Mail } from 'lucide-react'
+import AuthImagePattern from '../components/AuthImage'
 
 const Signup = () => {
   const [showPassword,setShowPassword] = useState(false)
@@ -19,43 +20,63 @@ const Signup = () => {
 
   const handleSubmit = (e)=>{
     e.preventDefault()
+    console.log("submit test",formData)
   }
 
   return (
-    <div className='min-h-screen gird lg:grid-cols-2'>
-        <div className='flex flex-col justify-center items-center p-6 sm:p-12'>
-
-            <div className='w-full max-w-md space-y-8'>
-
-              <div className='text-center mb-8 '>
-                  <div className='flex flex-col items-center gap-2 group'>
-                    <div className='size-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors'>
-                        <MessageSquare className='size-6 text-primary'></MessageSquare>
-                    </div>
-                    <h1 className='text-2xl font-bold mt-2'>Create Account</h1>
-                    <p className='text-base-content/60'>Get started with your free account</p>
-                  </div>
-              </div>
-
-              <form onSubmit={handleSubmit} className='space-y-6'>  
-              <div className='form-controll'>
-                <label className='label'>
-                  <span className='label-text font-medium'>Full Name</span>
-                </label>
-                <div className='relative'>
-                  <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                    <User className='size-5 text-base-content/40'></User>
-                  </div>
-                  <input type="text" className={`input input-bordered w-full pl-10`}  placeholder='ACC' value={formData.fullname} onChange={(e)=>{setFormData({...formData,fullname:e.target.value})}}/>
-
+    <div className='h-screen grid lg:grid-cols-2'>
+        <div className='bg-[#263238]   flex flex-col text-white justify-center items-center p-6 sm:p-12'>
+            <div className='flex opacity-70 flex-col min-w-[70%]'>
+                <div className='flex flex-col gap-4 items-center justify-center'>
+                    <MessageSquare className='size-10 '></MessageSquare>
+                    <h1 className='font-bold text-2xl'>Create Account</h1>
+                    <p>Get started with your free account</p>
                 </div>
-              </div>
 
-              </form>
+                <div className='flex flex-col gap-2 mt-6'>
+                  <label className='font-bold'>Full name</label>
+                  <div className='flex gap-1 p-2 border-1'>
+                      <User className='size-5'></User>           
+                      <input type="text" onChange={(e)=>{setFormData({...formData,fullname: e.target.value})}} className='border-none outline-none w-full' placeholder='ACC' />
+                  </div>
+                </div>
 
+                <div className='flex flex-col gap-2 mt-6'>
+                  <label className='font-bold'>Email</label>
+                  <div className='flex gap-1 p-2 border-1'>
+                      <Mail className='size-5'></Mail>           
+                      <input type="text" onChange={(e)=>{setFormData({...formData,email: e.target.value})}}  className='border-none outline-none w-full' placeholder='Email@gmail.com' />
+                  </div>
+                </div>
+
+                <div className='flex flex-col gap-2 mt-6'>
+                  <label className='font-bold'>Password</label>
+                  <div className='flex gap-1 p-2 border-1 relative'>
+                      <Lock className='size-5'></Lock>           
+                      <input type={`${showPassword ? 'text' : 'password'}`}  onChange={(e)=>{setFormData({...formData,password: e.target.value})}}  className='border-none outline-none w-full' placeholder='********' />
+                      <div className='absolute right-0 px-2 cursor-pointer' onClick={(e)=>{setShowPassword(!showPassword)}}>
+                        {showPassword ? <Eye className='size-5'></Eye> : <EyeOff className='size-5'></EyeOff>}
+                      </div>
+                  </div>
+                </div>
+
+                <div onClick={(e)=>handleSubmit(e)} className='flex justify-center mt-4 w-full bg-[#6069d2] p-3 rounded-md font-bold cursor-pointer'>
+                  <button className='w-full'>Create Account</button>
+                </div>
+
+                <div className='flex justify-center opacity-80 mt-4'>
+                  <p>Already have an account? <span>Sign in</span></p>
+                </div>
             </div>
-
         </div>
+
+        <div className='flex flex-col justify-center items-center p-6 sm:p-12 bg-[#090d14]'>
+          <AuthImagePattern  
+              title="Join our community"
+              subtitle="Connect with friends, share moments, and stay in touch with your loved ones.">
+          </AuthImagePattern>
+        </div>
+
     </div>
   )
 }
