@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { authStore } from '../store/AuthStore'
+
 
 const Home = () => {
+  
+
   return (
     <div>
       

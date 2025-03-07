@@ -2,7 +2,7 @@ import jwt  from 'jsonwebtoken'
 import User from '../models/user.js'
 export const protectedRoute = async(req,res,next)=>{
     try {
-        const Token = req.cookie.jwt
+        const Token = req.cookies.jwt
         if(!Token){
             return res.status(401).json({message:"Unauthorized[ - No token "})
         }
