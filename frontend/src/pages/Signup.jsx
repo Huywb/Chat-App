@@ -35,8 +35,8 @@ const Signup = () => {
   }
 
   return (
-    <div className='h-screen grid lg:grid-cols-2'>
-        <div className='bg-[#263238]   flex flex-col text-white justify-center items-center p-6 sm:p-12'>
+    <div className='h-screen grid lg:grid-cols-2 bg-[#263238] overflow-hidden'>
+        <div className='   flex flex-col text-white justify-center items-center p-6 sm:p-12'>
             <div className='flex opacity-70 flex-col min-w-[70%]'>
                 <div className='flex flex-col gap-4 items-center justify-center'>
                     <MessageSquare className='size-10 '></MessageSquare>
@@ -81,7 +81,7 @@ const Signup = () => {
             </div>
         </div>
 
-        <div className='flex flex-col justify-center items-center p-6 sm:p-12 bg-[#090d14]'>
+        <div className='flex flex-col justify-center items-center  m-4 rounded-md bg-[#090d14]'>
           <AuthImagePattern  
               title="Join our community"
               subtitle="Connect with friends, share moments, and stay in touch with your loved ones.">
