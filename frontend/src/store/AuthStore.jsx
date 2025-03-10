@@ -36,6 +36,16 @@ export const authStore = create((set)=>({
             set({isSigningUp: false})
         }
     },
+    login: async(data)=>{
+        set({isLoggingIn:true})
+        try {
+            const res = await AxiosIntance.post("/auth/login",data)
+            set({authUser: res.data})
+            toast.success("Login successfully")
+        } catch (error) {
+            toast.error(error.response.data.message)
+        }
+    },
 
     logout: async()=>{
         try {

@@ -3,7 +3,11 @@ import { MessageSquare,Settings,LogIn,User } from 'lucide-react'
 import { authStore } from '../store/AuthStore'
 
 const Navbar = () => {
-  const {authUser} = authStore()
+  const {authUser,logout} = authStore()
+
+  const handleLogout = ()=>{
+    logout()
+  }
   return (
     <div className='flex justify-between p-4 bg-[#090d14] text-white transition duration-300'>
       <div className='flex gap-2 px-2'>
@@ -21,7 +25,7 @@ const Navbar = () => {
             <User />
             <h1 className='font-bold text-md'>Profile</h1>
           </div>
-          <div className='flex gap-2 items-center cursor-pointer opacity-60 hover:opacity-90 transition-opacity'>
+          <div onClick={handleLogout} className='flex gap-2 items-center cursor-pointer opacity-60 hover:opacity-90 transition-opacity'>
             <LogIn />
             <h1 className='font-bold text-md'>Logout</h1>
           </div>
