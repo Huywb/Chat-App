@@ -24,8 +24,9 @@ export const Login =async (req,res)=>{
 }
 
 export const Register=async (req,res)=>{
-    const {email,fullName,password,profilePic} = req.body
+    
     try {
+        const {email,fullName,password,profilePic} = req.body
         if(password.length < 6){
             return res.status(400).json({message: "Password must be at least 6 charactors"})
         }
@@ -52,7 +53,7 @@ export const Register=async (req,res)=>{
         }
         
     } catch (error) {
-        console.log('Error in register controller',error.meesage)
+        console.log('Error in register controller',error)
         res.status(500).json({message:'Internal server error'})
     }
 }

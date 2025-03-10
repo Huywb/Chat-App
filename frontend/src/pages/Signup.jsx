@@ -3,11 +3,13 @@ import { authStore } from '../store/AuthStore'
 import { Box } from '@mui/material'
 import { MessageSquare, User, Eye,EyeOff,Lock,Mail } from 'lucide-react'
 import AuthImagePattern from '../components/AuthImage'
+import { Link } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 const Signup = () => {
   const [showPassword,setShowPassword] = useState(false)
   const [formData,setFormData] = useState({
-    fullname: '',
+    fullName: '',
     email: '',
     password: ''
   })
@@ -15,12 +17,21 @@ const Signup = () => {
   const {signup, isSignUp} = authStore()
 
   const validateForm = ()=>{
-
+    if(!formData.fullName.trim()) return toast.error("Full name is required")
+    if(!formData.email.trim()) return toast.error("Email is required")
+    if(!formData.password) return toast.error("Password is required")
+    if(formData.password.length < 6) return toast.error("Password at least 6 charactor")
+    
+    return true
   }
 
   const handleSubmit = (e)=>{
     e.preventDefault()
-    console.log("submit test",formData)
+    const success = validateForm(formData)
+    console.log(success)
+    if(success == true) {
+      signup(formData)
+    }
   }
 
   return (
@@ -37,7 +48,7 @@ const Signup = () => {
                   <label className='font-bold'>Full name</label>
                   <div className='flex gap-1 p-2 border-1'>
                       <User className='size-5'></User>           
-                      <input type="text" onChange={(e)=>{setFormData({...formData,fullname: e.target.value})}} className='border-none outline-none w-full' placeholder='ACC' />
+                      <input type="text" onChange={(e)=>{setFormData({...formData,fullName: e.target.value})}} className='border-none outline-none w-full' placeholder='ACC' />
                   </div>
                 </div>
 
@@ -65,7 +76,7 @@ const Signup = () => {
                 </div>
 
                 <div className='flex justify-center opacity-80 mt-4'>
-                  <p>Already have an account? <span>Sign in</span></p>
+                  <p>Already have an account? <Link to='/login'>Sign in</Link></p>
                 </div>
             </div>
         </div>
