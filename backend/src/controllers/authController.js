@@ -3,39 +3,38 @@ import User from '../models/user.js'
 import { generateToken } from '../libs/utils.js'
 import cloudinary from '../libs/cloudinary.js'
 
-export const Login =async (req,res)=>{
-    const {email,password} = req.body
+export const Login = async (req, res) => {
+    const { email, password } = req.body
     try {
-        const user = await User.findOne({email})
-        if(!user){
-            return res.status(400).json({message:"Email Not correct"})
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(400).json({ message: "Email Not correct" })
         }
-        const hashPass = await bcrypt.compare(password,user.password)
-        if(!hashPass){
-            return res.status(400).json({message:"Password not correct"})
+        const hashPass = await bcrypt.compare(password, user.password)
+        if (!hashPass) {
+            return res.status(400).json({ message: "Password not correct" })
         }
-        generateToken(user._id,res)
-        return res.status(201).json({message:"Login success",data:user})
-
+        generateToken(user._id, res)
+        const { password: _, ...userData } = user.toObject()
+        return res.status(201).json({ message: "Login success", data: userData })
     } catch (error) {
-        console.log("Error in Login controller",error.meesage)
-        res.status(500).json({message:"Internal Server Error"})
+        console.log("Error in Login controller", error.message)
+        res.status(500).json({ message: "Internal Server Error" })
     }
 }
 
-export const Register=async (req,res)=>{
-    
+export const Register = async (req, res) => {
     try {
-        const {email,fullName,password,profilePic} = req.body
-        if(password.length < 6){
-            return res.status(400).json({message: "Password must be at least 6 charactors"})
+        const { email, fullName, password, profilePic } = req.body
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters" })
         }
-        const user = await User.findOne({email})
-        if(user){
-            return res.status(400).json({message: "User already exists"})
+        const user = await User.findOne({ email })
+        if (user) {
+            return res.status(400).json({ message: "User already exists" })
         }
         const Salt = await bcrypt.genSalt(10)
-        const hashPass = await  bcrypt.hash(password,Salt)
+        const hashPass = await bcrypt.hash(password, Salt)
 
         const newUser = await User.create({
             email,
@@ -43,53 +42,59 @@ export const Register=async (req,res)=>{
             password: hashPass
         })
 
-        if(newUser){
-            generateToken(newUser._id,res)
+        if (newUser) {
+            generateToken(newUser._id, res)
             await newUser.save()
-
-            res.status(201).json({meesage:"User created success",data: newUser})
-        }else{
-            res.status(400).json({message:"Invalid user data"})
+            const { password: _, ...userData } = newUser.toObject()
+            res.status(201).json({ message: "User created success", data: userData })
+        } else {
+            res.status(400).json({ message: "Invalid user data" })
         }
-        
     } catch (error) {
-        console.log('Error in register controller',error)
-        res.status(500).json({message:'Internal server error'})
+        console.log('Error in register controller', error.message)
+        res.status(500).json({ message: 'Internal Server Error' })
     }
 }
 
-export const LogOut = (req,res)=>{
+export const LogOut = (req, res) => {
     try {
-        res.cookie('jwt',"",{maxAge: 0})
-        res.status(200).json({message:"Logout success"})
+        res.cookie('jwt', "", {
+            maxAge: 0,
+            httpOnly: true,
+            sameSite: 'strict',
+            secure: process.env.NODE_ENV !== 'development'
+        })
+        res.status(200).json({ message: "Logout success" })
     } catch (error) {
-        console.log("Error in Logout controller",error.message)
-        res.status(400).json({message:"Internal Server Error"})
+        console.log("Error in Logout controller", error.message)
+        res.status(400).json({ message: "Internal Server Error" })
     }
 }
 
-export const updateProfile = async(req,res)=>{
+export const updateProfile = async (req, res) => {
     try {
-        const {profilePic} = req.body
+        const { profilePic } = req.body
         const userId = req.user._id
-        if(!profilePic){
-            return res.status(400).json({message:"Profile pic is required"})
+        if (!profilePic) {
+            return res.status(400).json({ message: "Profile pic is required" })
         }
 
         const uploadResponse = await cloudinary.uploader.upload(profilePic)
-        const uploadedUser = await User.findByIdAndUpdate(userId,{profilePic:uploadResponse.secure_url},{new:true})
-        res.status(200).json({message:"Upload profile success",data:uploadedUser})
+        const uploadedUser = await User.findByIdAndUpdate(userId, { profilePic: uploadResponse.secure_url }, { new: true })
+        const { password: _, ...userData } = uploadedUser.toObject()
+        res.status(200).json({ message: "Upload profile success", data: userData })
     } catch (error) {
-        console.log("Error in updateProfile controller",error.meesage)
-        res.status(500).json({message:'Internal Server Error'})
+        console.log("Error in updateProfile controller", error.message)
+        res.status(500).json({ message: 'Internal Server Error' })
     }
 }
 
 export const checkAuth = (req, res) => {
     try {
-      res.status(200).json(req.user);
+        const { password: _, ...userData } = req.user.toObject()
+        res.status(200).json(userData)
     } catch (error) {
-      console.log("Error in checkAuth controller", error.message);
-      res.status(500).json({ message: "Internal Server Error" });
+        console.log("Error in checkAuth controller", error.message)
+        res.status(500).json({ message: "Internal Server Error" })
     }
-  };
+}
