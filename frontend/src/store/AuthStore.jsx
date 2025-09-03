@@ -49,7 +49,7 @@ export const authStore = create((set)=>({
 
     logout: async()=>{
         try {
-            await AxiosIntance.post("/auth/loguot")
+            await AxiosIntance.post("/auth/logout")
             set({authUser:null})
             toast.success("Logout successfully")
         } catch (error) {
